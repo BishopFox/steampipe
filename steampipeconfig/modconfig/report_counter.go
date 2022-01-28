@@ -12,6 +12,8 @@ import (
 
 // ReportCounter is a struct representing a leaf reporting node
 type ReportCounter struct {
+	HclResourceBase
+
 	FullName        string `cty:"name" json:"-"`
 	ShortName       string `json:"-"`
 	UnqualifiedName string `json:"-"`

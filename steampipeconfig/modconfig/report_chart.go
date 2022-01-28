@@ -4,14 +4,15 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/zclconf/go-cty/cty"
-
 	typehelpers "github.com/turbot/go-kit/types"
 	"github.com/turbot/steampipe/utils"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // ReportChart is a struct representing a leaf reporting node
 type ReportChart struct {
+	HclResourceBase
+
 	FullName        string `cty:"name" json:"-"`
 	ShortName       string `json:"-"`
 	UnqualifiedName string `json:"-"`

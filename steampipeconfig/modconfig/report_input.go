@@ -12,17 +12,19 @@ import (
 
 // ReportInput is a struct representing a leaf reporting node
 type ReportInput struct {
+	HclResourceBase
+
 	FullName        string `cty:"name" json:"-"`
 	ShortName       string `json:"-"`
 	UnqualifiedName string `json:"-"`
 
 	// these properties are JSON serialised by the parent LeafRun
-	Title *string `cty:"title" hcl:"title" column:"title,text" json:"-"`
-	Width *int    `cty:"width" hcl:"width" column:"width,text"  json:"-"`
-	SQL   *string `cty:"sql" hcl:"sql" column:"sql,text" json:"-"`
-
-	Type *string      `cty:"type" hcl:"type" column:"type,text"  json:"type,omitempty"`
-	Base *ReportInput `hcl:"base" json:"-"`
+	Title  *string      `cty:"title" hcl:"title" column:"title,text" json:"-"`
+	Width  *int         `cty:"width" hcl:"width" column:"width,text"  json:"-"`
+	SQL    *string      `cty:"sql" hcl:"sql" column:"sql,text" json:"-"`
+	Type   *string      `cty:"type" hcl:"type" column:"type,text"  json:"type,omitempty"`
+	Result *string      `hcl:"result" json:"result"`
+	Base   *ReportInput `hcl:"base" json:"-"`
 
 	DeclRange hcl.Range  `json:"-"`
 	Mod       *Mod       `cty:"mod" json:"-"`
