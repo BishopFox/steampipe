@@ -19,19 +19,20 @@ type ReportInput struct {
 	UnqualifiedName string `json:"-"`
 
 	// these properties are JSON serialised by the parent LeafRun
-	Title  *string      `cty:"title" hcl:"title" column:"title,text" json:"-"`
-	Width  *int         `cty:"width" hcl:"width" column:"width,text"  json:"-"`
-	SQL    *string      `cty:"sql" hcl:"sql" column:"sql,text" json:"-"`
-	Type   *string      `cty:"type" hcl:"type" column:"type,text"  json:"type,omitempty"`
-	Result *string      `hcl:"result" json:"result"`
-	Base   *ReportInput `hcl:"base" json:"-"`
+	Title *string      `cty:"title" hcl:"title" column:"title,text" json:"-"`
+	Width *int         `cty:"width" hcl:"width" column:"width,text"  json:"-"`
+	SQL   *string      `cty:"sql" hcl:"sql" column:"sql,text" json:"-"`
+	Type  *string      `cty:"type" hcl:"type" column:"type,text"  json:"type,omitempty"`
+	Value *string      `json:"value"`
+	Base  *ReportInput `hcl:"base" json:"-"`
 
 	DeclRange hcl.Range  `json:"-"`
 	Mod       *Mod       `cty:"mod" json:"-"`
 	Paths     []NodePath `column:"path,jsonb" json:"-"`
 
-	parents  []ModTreeItem
-	metadata *ResourceMetadata
+	parents         []ModTreeItem
+	metadata        *ResourceMetadata
+	reportContainer *ReportContainer
 }
 
 func NewReportInput(block *hcl.Block) *ReportInput {
@@ -90,7 +91,11 @@ func (c *ReportInput) AddReference(*ResourceReference) {}
 // SetMod implements HclResource
 func (c *ReportInput) SetMod(mod *Mod) {
 	c.Mod = mod
-	c.FullName = fmt.Sprintf("%s.%s", c.Mod.ShortName, c.UnqualifiedName)
+	if c.reportContainer != nil {
+		c.FullName = fmt.Sprintf("%s.%s.%s", c.Mod.ShortName, c.reportContainer.UnqualifiedName, c.UnqualifiedName)
+	} else {
+		c.FullName = fmt.Sprintf("%s.%s", c.Mod.ShortName, c.UnqualifiedName)
+	}
 }
 
 // GetMod implements HclResource
@@ -210,4 +215,9 @@ func (c *ReportInput) GetWidth() int {
 // GetUnqualifiedName implements ReportLeafNode
 func (c *ReportInput) GetUnqualifiedName() string {
 	return c.UnqualifiedName
+}
+
+// SetReportContainer sets the parent report container
+func (c *ReportInput) SetReportContainer(reportContainer *ReportContainer) {
+	c.reportContainer = reportContainer
 }
