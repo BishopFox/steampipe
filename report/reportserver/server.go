@@ -125,7 +125,13 @@ func buildLeafNodeCompletePayload(event *reportevents.LeafNodeComplete) []byte {
 		Action:     "leaf_node_complete",
 		ReportNode: event.Node,
 	}
-	jsonString, _ := json.Marshal(payload)
+	//jsonString, _ := json.Marshal(payload)
+	//return jsonString
+	jsonString, err := json.MarshalIndent(payload, "", "  ")
+	fmt.Println(err)
+	a := string(jsonString)
+	fmt.Println(a)
+
 	return jsonString
 }
 
@@ -177,12 +183,13 @@ func getReportsInterestedInResourceChanges(reportsBeingWatched []string, existin
 	return changedReportNames
 }
 
-// Starts the API server
+// Start starts the API server
 func (s *Server) Start() {
 	go Init(s.context, s.webSocket, s.workspace, s.dbClient, s.reportClients, s.mutex)
 	StartAPI(s.context, s.webSocket)
 }
 
+// Shutdown stops the API server
 func (s *Server) Shutdown(ctx context.Context) {
 	// Close the DB client
 	if s.dbClient != nil {
